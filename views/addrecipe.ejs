@@ -1,0 +1,64 @@
+<div class="px-4 py-5 my-5 text-center">
+  <h1 class="display-5 fw-bold">Submit Your Recipe</h1>
+  <div class="col-lg-6 mx-auto">
+    <p class="lead">
+      Share your amazing recipes with thousands of web developers across the
+      world. Fill out our form to get started.
+    </p>
+  </div>
+</div>
+
+<div class="col-8">
+  <form action="/addrecipe" enctype="multipart/form-data" method="POST">
+    <div class="row g-3">
+      <div class="col-12">
+        <label for="image">Product Image</label>
+        <input type="file" class="form-control" name="image" accept="image/*" />
+      </div>
+
+      <div class="col-12">
+        <label for="name" class="form-label">Recipe Name</label>
+        <input type="text" name="name" id="name" class="form-control" required />
+      </div>
+
+      <div class="col-12">
+        <label for="description" class="form-label">Description</label>
+        <textarea name="description" id="description" class="form-control" rows="3" required></textarea>
+      </div>
+
+      <div class="col-12">
+        <label for="ingredients" class="form-label">Ingredients</label><br />
+        <small>Example: Ice</small>
+        <div class="ingredientList">
+          <div class="ingredeintDiv mb-1">
+            <input type="text" name="ingredients" class="form-control" />
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <button type="button" class="btn btn-outline-primary" id="addIngredientsBtn">+ Ingredient</button>
+      </div>
+
+      <div class="col-12">
+        <label for="steps" class="form-label">Steps</label><br />
+        <small>Example: Boil the water</small>
+        <div class="stepsList">
+          <div class="stepsDiv mb-1">
+            <input type="text" name="steps" class="form-control" />
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <button type="button" class="btn btn-outline-primary" id="addStepsBtn">+ Steps</button>
+      </div>
+
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Submit Recipe</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script src="/js/script.js"></script>

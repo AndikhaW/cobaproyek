@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Home</title>
+</head>
+<body>
+  <% if (typeof user !== 'undefined' && user.full_name) { %>
+    <h1>Welcome, <%= user.full_name %>!</h1>
+    <p>You are logged in.</p>
+    <a href="/profile">Profile</a>
+    <a href="/logout">Logout</a>
+  <% } else { %>
+    <h1>Welcome to the Home Page</h1>
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
+  <% } %>
+
+  <% if (typeof recipes !== 'undefined' && recipes.length > 0) { %>
+    <% recipes.forEach(recipe => { %>
+      <div class="recipe-card">
+        <h2><%= recipe.recipe_name %></h2>
+        <p>By: <%= recipe.username %></p>
+        <img src="/uploads/<%= recipe.image %>" alt="Recipe Image" width="200" height="200">
+        <!-- Display other recipe details as needed -->
+        <a href="/recipe/<%= recipe.recipe_id %>" class="btn btn-primary">View Recipe</a>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p>No recipes found.</p>
+  <% } %>
+</body>
+</html>

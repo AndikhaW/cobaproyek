@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Profile</title>
+        <style>
+          .recipe-image {
+            width: 200px; /* Adjust the width to your preferred size */
+            height: auto;
+          }
+        </style>
+      </head>
+<body>
+  <h1>Profile</h1>
+  <p>Welcome to your profile page, <%= user.full_name %>!</p>
+  <p>Username: <%= user.username %></p>
+  <p>Email: <%= user.email %></p>
+
+  <h2>Your Recipes:</h2>
+  <% if (recipes.length > 0) { %>
+    <ul>
+      <% recipes.forEach(function(recipe) { %>
+        <h2><a href="/recipe/<%= recipe.recipe_id %>"><%= recipe.recipe_name %></a></h2>
+      <% }); %>
+    </ul>
+  <% } else { %>
+    <p>You haven't uploaded any recipes yet.</p>
+  <% } %>
+
+  <a href="/addrecipe">Add Recipe</a>
+
+  <a href="/home">Back to Home</a>
+
+   <% if (recipes.length > 0) { %>
+    <h3>Your Recipes</h3>
+    <form action="/recipe/delete" method="POST">
+        <button type="submit" onclick="return confirm('Are you sure you want to delete all selected recipes?')">Delete Selected</button>
+        <ul>
+          <% recipes.forEach((recipe) => { %>
+            <li>
+              <input type="checkbox" name="recipeIds[]" value="<%= recipe.recipe_id %>">
+              <a href="/recipe/<%= recipe.recipe_id %>"><%= recipe.recipe_name %></a>
+              <span>by <%= recipe.username %></span>
+              <img class="recipe-image" src="/uploads/<%= recipe.image %>" alt="<%= recipe.recipe_name %>">
+            </li>
+          <% }) %>
+        </ul>
+        <button type="submit">Delete Selected</button>
+      </form>
+  <% } else { %>
+    <p>No recipes found.</p>
+  <% } %>
+</body>
+  
+</html>

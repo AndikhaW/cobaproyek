@@ -1,0 +1,48 @@
+<!-- recipe.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Recipe Details</title>
+  <!-- Add your CSS stylesheets and other dependencies here -->
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <style>
+    .recipe-image {
+      display: flex;
+      height: 200px;
+      margin-bottom: 10px;
+      box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    
+    .recipe-image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <h1><%= recipe.recipe_name %></h1>
+  <p><strong>Ingredients:</strong></p>
+  <ul>
+    <% recipe.ingredients.forEach(ingredient => { %>
+      <li><%= ingredient %></li>
+    <% }); %>
+  </ul>
+  <p><strong>Steps:</strong></p>
+  <ol>
+    <% recipe.steps.forEach(step => { %>
+      <li><%= step %></li>
+    <% }); %>
+  </ol>
+  <p><strong>Description:</strong></p>
+  <p><%= recipe.description %></p>
+  <p><strong>Image:</strong></p>
+  <div class="recipe-image">
+    <img src="/uploads/<%= recipe.image %>" alt="Recipe Image" />
+  </div>
+  <a href="/home" class="btn btn-primary">Back Home</a>
+</body>
+</html>
