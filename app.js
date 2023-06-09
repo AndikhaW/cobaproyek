@@ -296,11 +296,84 @@ router.get("/recipe/:id", async (req, res) => {
       res.render("error", { error: "Recipe not found" });
     } else {
       // Render the recipe details template and pass the recipe information
-      res.render("recipe", { recipe });
+      const commentsQuery = `
+        SELECT comment.*, users.full_name
+        FROM comment
+        INNER JOIN users ON comment.user_id = users.user_id
+        WHERE comment.recipe_id = $1
+        ORDER BY comment.created_at DESC
+      `;
+      const { rows: comments } = await pool.query(commentsQuery, [recipeId]);
+
+      const ratingQuery = `
+      SELECT COALESCE(AVG(rating), 0) AS average_rating
+      FROM rating
+      WHERE recipe_id = $1
+      `;
+
+      const ratingResult = await pool.query(ratingQuery, [recipeId]);
+      const averageRating = Number(ratingResult.rows[0].average_rating) || 0;
+
+      res.render("recipe", {
+        recipe,
+        comments,
+        averageRating: averageRating.toFixed(1),
+        user: req.session.user,
+      });
     }
   } catch (error) {
     console.error("Error retrieving recipe details:", error);
     res.render("error", { error: "Failed to retrieve recipe details" });
+  }
+});
+
+router.post("/recipe/:id/comment", async (req, res) => {
+  const recipeId = req.params.id;
+  const { commentText } = req.body;
+
+  try {
+    // Check if the user is logged in
+    if (!req.session.user) {
+      return res.redirect(`/login?redirect=/recipe/${recipeId}`);
+    }
+
+    // Insert the comment into the database
+    const query = `
+      INSERT INTO comment (recipe_id, user_id, comment_text, created_at)
+      VALUES ($1, $2, $3, NOW())
+    `;
+    await pool.query(query, [recipeId, req.session.user.user_id, commentText]);
+
+    // Redirect back to the recipe page
+    res.redirect(`/recipe/${recipeId}`);
+  } catch (error) {
+    console.error("Error submitting comment:", error);
+    res.render("error", { error: "Failed to submit comment" });
+  }
+});
+
+router.post("/recipe/:id/rating", async (req, res) => {
+  const recipeId = req.params.id;
+  const { rating } = req.body;
+
+  try {
+    // Check if the user is logged in
+    if (!req.session.user) {
+      return res.redirect(`/login?redirect=/recipe/${recipeId}`);
+    }
+
+    // Insert the rating into the database
+    const query = `
+      INSERT INTO rating (recipe_id, user_id, rating)
+      VALUES ($1, $2, $3)
+    `;
+    await pool.query(query, [recipeId, req.session.user.user_id, rating]);
+
+    // Redirect back to the recipe page
+    res.redirect(`/recipe/${recipeId}`);
+  } catch (error) {
+    console.error("Error submitting rating:", error);
+    res.render("error", { error: "Failed to submit rating" });
   }
 });
 

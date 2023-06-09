@@ -1,11 +1,10 @@
-<!-- recipe.ejs -->
-
 <!DOCTYPE html>
 <html>
 <head>
   <title>Recipe Details</title>
   <!-- Add your CSS stylesheets and other dependencies here -->
   <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <style>
     .recipe-image {
       display: flex;
@@ -15,16 +14,71 @@
       overflow: hidden;
       border-radius: 8px;
     }
-    
+
     .recipe-image img {
       max-width: 100%;
       max-height: 100%;
       object-fit: cover;
     }
+
+    .comment {
+      margin-bottom: 20px; /* Add margin bottom between comments */
+    }
+
+    .username {
+      font-weight: bold;
+    }
+
+    .timestamp {
+      font-size: 12px;
+      color: #888;
+
+
+      .average-rating {
+        margin-top: 20px;
+      }
+      
+      .stars {
+        display: inline-block;
+      }
+      
+      .star {
+        color: #ffd700;
+        font-size: 24px;
+      }
+      
+      .filled {
+        color: #f8d64e;
+      }
+      
+    }
   </style>
 </head>
 <body>
   <h1><%= recipe.recipe_name %></h1>
+  <div class="average-rating">
+    <h2>Average Rating: <%= (averageRating) %></h2>
+    <div class="stars">
+      <% let filledStars = Math.floor(averageRating); %>
+      <% let hasHalfStar = averageRating % 1 !== 0; %>
+      
+      <% for (let i = 1; i <= 5; i++) { %>
+        <% if (i <= filledStars) { %>
+          <span class="star filled">
+            <i class="fas fa-star"></i>
+          </span>
+        <% } else if (i === filledStars + 1 && hasHalfStar) { %>
+          <span class="star half-filled">
+            <i class="fas fa-star-half-alt"></i>
+          </span>
+        <% } else { %>
+          <span class="star">
+            <i class="far fa-star"></i>
+          </span>
+        <% } %>
+      <% } %>
+    </div>
+  </div>
   <p><strong>Ingredients:</strong></p>
   <ul>
     <% recipe.ingredients.forEach(ingredient => { %>
@@ -43,6 +97,57 @@
   <div class="recipe-image">
     <img src="/uploads/<%= recipe.image %>" alt="Recipe Image" />
   </div>
+
+  <div class="comments">
+    <h2>Comments</h2>
+
+    <% if (comments.length > 0) { %>
+      <% comments.forEach((comment) => { %>
+        <div class="comment">
+          <div class="username"><%= comment.full_name %></div>
+          <div class="text"><%= comment.comment_text %></div>
+          <div class="timestamp"><%= comment.created_at.toDateString() %></div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p>No comments yet.</p>
+    <% } %>
+
+    <% if (user) { %>
+      <form action="/recipe/<%= recipe.recipe_id %>/comment" method="POST">
+        <label for="commentText">Add a comment:</label>
+        <textarea name="commentText" id="commentText" rows="4" cols="50"></textarea>
+        <br>
+        <button type="submit">Submit</button>
+      </form>
+    <% } else { %>
+      <p>Please <a href="/login">login</a> to add a comment.</p>
+    <% } %>
+  </div>
+
+  <div class="comments">
+    <!-- Existing code... -->
+  
+    <% if (user) { %>
+      <form action="/recipe/<%= recipe.recipe_id %>/comment" method="POST">
+        <!-- Existing code... -->
+      </form>
+  
+      <h2>Rate this recipe:</h2>
+      <form action="/recipe/<%= recipe.recipe_id %>/rating" method="POST">
+        <select name="rating">
+          <option value="1">1 Star</option>
+          <option value="2">2 Stars</option>
+          <option value="3">3 Stars</option>
+          <option value="4">4 Stars</option>
+          <option value="5">5 Stars</option>
+        </select>
+        <button type="submit">Submit Rating</button>
+      </form>
+    <% } %>
+    
+  </div>
   <a href="/home" class="btn btn-primary">Back Home</a>
 </body>
+
 </html>
