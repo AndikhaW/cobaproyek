@@ -1,0 +1,66 @@
+CREATE TABLE comment (
+  comment_id bigserial primary key,
+  user_id bigint not null,
+  recipe_id bigint not null,
+  comment_text text,
+  created_at timestamp default current_timestamp,
+  foreign key (user_id) references users (user_id),
+  foreign key (recipe_id) references recipe (recipe_id)
+);
+
+
+CREATE TABLE rating (
+  rating_id BIGSERIAL PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  recipe_id BIGINT NOT NULL,
+  rating INT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users (user_id),
+  FOREIGN KEY (recipe_id) REFERENCES recipe (recipe_id)
+);
+
+
+CREATE TABLE recipe (
+  recipe_id bigserial primary key,
+  user_id bigint not null,
+  recipe_name text not null,
+  ingredients text[] not null,
+  steps text[] not null, 
+  description text not null,
+  image text not null,
+  view_number bigint default 1 not null,
+  created_at timestamp default current_timestamp,
+  foreign key (user_id) references users (user_id)
+);
+
+CREATE TABLE users (
+
+	user_id bigserial primary key,
+	full_name text not null,
+	username text unique not null,
+	email text unique not null,
+	password text not null
+
+);
+
+CREATE TABLE admin (
+
+	admin_id bigserial primary key,
+	username text unique not null,
+	email text unique not null,
+	password text not null
+
+);
+
+CREATE TABLE following (
+
+	user_id bigint not null,
+	followed_user_id bigint not null
+
+);
+
+CREATE TABLE image (
+
+	recipe_id bigint not null,
+	image bytea not null
+
+);
